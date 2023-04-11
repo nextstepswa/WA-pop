@@ -20,13 +20,13 @@ geo.codes <- readxl::read_excel(destfile) %>%
 # Consolidate / Remove duplicates
 county.codes <- geo.codes %>% select(county.code, county.name = `County Name`) %>%
   group_by(county.code) %>%
-  summarise(county.code = as.integer(first(county.code)),
+  summarise(county.code = first(county.code),
             county.name = first(county.name))
 
 # Some cities have the same codes (like Friday Harbor and Fredrickson)
 city.codes <- geo.codes %>% select(city.code, city.name = `City Name`) %>%
   group_by(city.name) %>%
-  summarise(city.code = as.integer(first(city.code)),
+  summarise(city.code = first(city.code),
             city.name = first(city.name))
 
 
