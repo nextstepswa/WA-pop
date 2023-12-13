@@ -12,21 +12,21 @@ destfile <-  here::here("data-raw", "ofm_wa_pop_postcensal.xlsx")
 curl::curl_download(url, destfile)
 wa_pop_raw <- read_excel(destfile, sheet = "Population", skip = 3)
 
-## 2012-2021 for matching to OFM NIBRS data
+## 2012-2022 for matching to OFM NIBRS data
 
 wa_popcounties_wide <- wa_pop_raw %>%
   filter(Filter == 1 | Jurisdiction == "State Total") %>%
-  select(Jurisdiction, matches("2012|2013|2014|2015|2016|2017|2018|2019|2020|2021")) %>%
+  select(Jurisdiction, matches("2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022")) %>%
   rename_at(vars(starts_with("2")), ~sub(" Postcen.*tion.*", "", .)) %>%
   rename_at(vars(contains("2020")), ~sub(".*$", "2020", .)) %>%
   rename_at(vars(starts_with("2")), ~sub("^", "Y", .)) %>%
   mutate(across(starts_with("Y"), ~as.numeric(.)),
-         pct.chg = Y2021/Y2012 - 1)
+         pct.chg = Y2022/Y2012 - 1)
 
 ## just the state totals by year
 wa_poptotal_long   <- wa_pop_raw %>%
   filter(Jurisdiction == "State Total") %>%
-  select(matches("2012|2013|2014|2015|2016|2017|2018|2019|2020|2021")) %>%
+  select(matches("2012|2013|2014|2015|2016|2017|2018|2019|2020|2021|2022")) %>%
   pivot_longer(everything(),
                names_to = "Year",
                values_to = "StatePop") %>%
